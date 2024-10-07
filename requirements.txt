@@ -2,6 +2,5 @@ python-telegram-bot
 django
 djangorestframework
 yookassa
-django-background-task
 django-cors-headers
 django-background-tasks
