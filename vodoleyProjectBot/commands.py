@@ -130,7 +130,7 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
             keyboard.append([InlineKeyboardButton("Отменить запись", callback_data=str(SERVICE_ACTION_CANCEL))])
             reply_markup = InlineKeyboardMarkup(keyboard)
 
-            time_diff = active.target_datetime - timezone.localtime(datetime.datetime.now())
+            time_diff = active.target_datetime - timezone.localtime(timezone.now())
             await update.message.reply_text(text=f"[DEBUG]: ID - {active.id}")
             await update.message.reply_text(text=messages['reminder']
                                             .replace('$address', active.address.address)
