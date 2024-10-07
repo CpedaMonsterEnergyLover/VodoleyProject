@@ -20,4 +20,5 @@ urlpatterns = [
     path('api/edit-checkout/', EditCheckout.as_view(), name='edit-checkout'),
     path('api/cancel-checkout/', CancelCheckout.as_view(), name='cancel-checkout'),
     path('api/get-address-timings/', GetAddressTimings.as_view(), name='get-address-timings'),
+    path('api/confirm-payment/', ConfirmPayment.as_view(), name='confirm-payment'),
 ]

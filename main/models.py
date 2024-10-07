@@ -186,7 +186,9 @@ class Checkout(models.Model):
     final_price = models.FloatField(validators=[MinValueValidator(0.0)], verbose_name="Стоимость заказа")
     user_review = models.CharField(max_length=200, null=True, blank=True, default="", verbose_name="Отзыв клиента")
     payment_type = models.ForeignKey(PaymentType, null=True, on_delete=models.SET_NULL, verbose_name="Способ оплаты")
-
+    payment_link = models.TextField(null=True, verbose_name="Ссылка на оплату")
+    payment_success = models.BooleanField(default=False, verbose_name="Заказ оплачен?")
+    uuid = models.UUIDField(null=True)
 
     def close(self):
         if not self.status and not self.bonuses_received and not self.canceled:

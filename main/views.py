@@ -7,8 +7,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from background_task import background
-
-
+import uuid
+from yookassa import Configuration, Payment
 from .serializers import *
 from .util import get_random_string
 
@@ -216,11 +216,43 @@ class CreateCheckout(APIView):
             notify_user_when_checkout_ends(checkout.id, schedule=time_difference.seconds)
             task_started = True
 
+        Configuration.account_id = "449483"
+        Configuration.secret_key = "live_PZw_sHdVmABYppAfafKH1SqLOmlJ8mw_vt-6cP5jeiM"
+        order_uuid = uuid.uuid4()
+        payment = Payment.create({
+            "amount": {
+                "value": price_sum,
+                "currency": "RUB"
+            },
+            "confirmation": {
+                "type": "redirect",
+                "return_url": f"https://admin-vodoley.ocir.ru/api/confirm-payment?order_id={uuid.uuid4()}"
+            },
+            "capture": True,
+            "description": ""
+        }, order_uuid)
+
         return JsonResponse(data={'message': 'OK',
                                   'task started': time_difference if task_started else 'False',
                                   'approved': list(map(lambda x: x.id, approved)),
-                                  'finalServices': list(map(lambda x: x.id, finalServices))},
+                                  'finalServices': list(map(lambda x: x.id, finalServices)),
+                                  'payment_link': payment.confirmation.confirmation_url
+                                  },
                             safe=False)
+
+
+class ConfirmPayment(APIView):
+    def get(self, request, *args, **kwargs):
+        order_uuid = request.GET.get('order_id', 'qwerty123')
+        checkout = Checkout.objects.get(uuid=order_uuid)
+
+        if checkout is None:
+            return JsonResponse(data={'status': 'Error', 'message': 'order not found'}, safe=False)
+
+        checkout.payment_success = True
+        checkout.save()
+
+        return JsonResponse(data={'message': 'OK'}, safe=False)
 
 
 class PostponeCheckout(APIView):
