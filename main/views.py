@@ -254,7 +254,10 @@ class ConfirmPayment(APIView):
         except Checkout.DoesNotExist:
             return JsonResponse(data={'status': 'error', 'message': 'invalid checkout id'})
 
+        Configuration.account_id = "449483"
+        Configuration.secret_key = "live_PZw_sHdVmABYppAfafKH1SqLOmlJ8mw_vt-6cP5jeiM"
         payment = Payment.find_one(checkout.uuid)
+
         if payment and payment.status == 'succeeded':
             checkout.payment_success = True
             checkout.save()
