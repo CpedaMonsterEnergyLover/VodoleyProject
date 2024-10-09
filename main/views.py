@@ -233,7 +233,7 @@ class CreateCheckout(APIView):
             "description": ""
         }, order_uuid)
 
-        checkout.payment_link = payment.confirmation.confirmation_url
+        checkout.payment_link = str(payment.confirmation.confirmation_url)
         checkout.save()
 
         return JsonResponse(data={'message': 'OK',
