@@ -188,7 +188,6 @@ class Checkout(models.Model):
     payment_type = models.ForeignKey(PaymentType, null=True, on_delete=models.SET_NULL, verbose_name="Способ оплаты")
     payment_link = models.TextField(null=True, verbose_name="Ссылка на оплату")
     payment_success = models.BooleanField(default=False, verbose_name="Заказ оплачен?")
-    uuid = models.UUIDField(null=True)
 
     def close(self):
         if not self.status and not self.bonuses_received and not self.canceled:

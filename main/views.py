@@ -227,13 +227,12 @@ class CreateCheckout(APIView):
             },
             "confirmation": {
                 "type": "redirect",
-                "return_url": f"https://admin-vodoley.ocir.ru/api/confirm-payment?order_id={uuid.uuid4()}"
+                "return_url": f"https://admin-vodoley.ocir.ru/api/confirm-payment?order_id={checkout.id}"
             },
             "capture": True,
             "description": ""
         }, order_uuid)
 
-        checkout.uuid = order_uuid
         checkout.payment_link = str(payment.confirmation.confirmation_url)
         checkout.save()
 
@@ -248,11 +247,11 @@ class CreateCheckout(APIView):
 
 class ConfirmPayment(APIView):
     def get(self, request, *args, **kwargs):
-        order_uuid = request.GET.get('order_id', 'qwerty123')
-        checkout = Checkout.objects.get(uuid=order_uuid)
-
-        if checkout is None:
-            return redirect("/api/get-user-checkouts/")
+        order_id = request.GET.get('order_id', 0)
+        try:
+            checkout = Checkout.objects.get(id=order_id)
+        except Checkout.DoesNotExist:
+            JsonResponse(data={'status': 'error', 'message': 'invalid checkout id'})
 
         checkout.payment_success = True
         checkout.save()
