@@ -233,6 +233,7 @@ class CreateCheckout(APIView):
             "description": ""
         }, order_uuid)
 
+        checkout.uuid = order_uuid
         checkout.payment_link = str(payment.confirmation.confirmation_url)
         checkout.save()
 
