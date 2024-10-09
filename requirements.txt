@@ -4,3 +4,4 @@ djangorestframework
 yookassa
 django-cors-headers
 django-background-tasks
+django-compat

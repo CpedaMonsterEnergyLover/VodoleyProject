@@ -7,6 +7,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from background_task import background
+from django.shortcuts import redirect
 import uuid
 from yookassa import Configuration, Payment
 from .serializers import *
@@ -247,12 +248,13 @@ class ConfirmPayment(APIView):
         checkout = Checkout.objects.get(uuid=order_uuid)
 
         if checkout is None:
-            return JsonResponse(data={'status': 'Error', 'message': 'order not found'}, safe=False)
+            return redirect("/api/get-user-checkouts/")
 
         checkout.payment_success = True
         checkout.save()
 
-        return JsonResponse(data={'message': 'OK'}, safe=False)
+        # return JsonResponse(data={'message': 'OK'}, safe=False)
+        return redirect("/api/get-user-checkouts/")
 
 
 class PostponeCheckout(APIView):
