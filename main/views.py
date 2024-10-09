@@ -233,8 +233,8 @@ class CreateCheckout(APIView):
             "description": ""
         }, order_uuid)
 
-        checkout.uuid = order_uuid
-        checkout.payment_link = str(payment.confirmation.confirmation_url)
+        checkout.payment_id = payment.id
+        checkout.payment_link = payment.confirmation.confirmation_url
         checkout.save()
 
         return JsonResponse(data={'message': 'OK',
@@ -256,7 +256,7 @@ class ConfirmPayment(APIView):
 
         Configuration.account_id = "449483"
         Configuration.secret_key = "live_PZw_sHdVmABYppAfafKH1SqLOmlJ8mw_vt-6cP5jeiM"
-        payment = Payment.find_one(checkout.uuid)
+        payment = Payment.find_one(checkout.payment_id)
 
         if payment and payment.status == 'succeeded':
             checkout.payment_success = True
