@@ -233,6 +233,7 @@ class CreateCheckout(APIView):
             "description": ""
         }, order_uuid)
 
+        checkout.uuid = order_uuid
         checkout.payment_link = str(payment.confirmation.confirmation_url)
         checkout.save()
 
@@ -251,13 +252,18 @@ class ConfirmPayment(APIView):
         try:
             checkout = Checkout.objects.get(id=order_id)
         except Checkout.DoesNotExist:
-            JsonResponse(data={'status': 'error', 'message': 'invalid checkout id'})
+            return JsonResponse(data={'status': 'error', 'message': 'invalid checkout id'})
 
-        checkout.payment_success = True
-        checkout.save()
+        payment = Payment.find_one(checkout.uuid)
+        if payment and payment.status == 'succeeded':
+            checkout.payment_success = True
+            checkout.save()
 
-        # return JsonResponse(data={'message': 'OK'}, safe=False)
-        return redirect("/api/get-user-checkouts/")
+            SendMessage(checkout.user, f"Заказ №{checkout.id} успешно оплачен")
+            return redirect("https://t.me/vodoleyProject_bot?start=signup")
+
+        SendMessage(checkout.user, f"Пожалуйста, завершите оплату заказа №{checkout.id}")
+        return redirect("https://t.me/vodoleyProject_bot?start=signup")
 
 
 class PostponeCheckout(APIView):
