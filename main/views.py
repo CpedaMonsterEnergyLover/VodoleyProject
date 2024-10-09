@@ -233,6 +233,9 @@ class CreateCheckout(APIView):
             "description": ""
         }, order_uuid)
 
+        checkout.payment_link = payment.confirmation.confirmation_url
+        checkout.save()
+
         return JsonResponse(data={'message': 'OK',
                                   'task started': time_difference if task_started else 'False',
                                   'approved': list(map(lambda x: x.id, approved)),

@@ -128,8 +128,8 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
             # TODO: Перенос (изменение)
             # keyboard.append([InlineKeyboardButton("Перенести запись", callback_data=str(SERVICE_ACTION_POSTPONE))])
             keyboard.append([InlineKeyboardButton("Отменить запись", callback_data=str(SERVICE_ACTION_CANCEL))])
-            # if not active.payment_success and active.payment_link:
-            keyboard.append([InlineKeyboardButton("Оплатить онлайн", url=active.payment_link)])
+            if not active.payment_success and active.payment_link:
+                keyboard.append([InlineKeyboardButton("Оплатить онлайн", url=str(active.payment_link))])
 
             reply_markup = InlineKeyboardMarkup(keyboard)
 
