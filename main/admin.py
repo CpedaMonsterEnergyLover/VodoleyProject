@@ -28,7 +28,7 @@ admin.site.register(CustomUser, CustomUserAdmin)
 class CheckoutAdmin(admin.ModelAdmin):
     # form = CheckoutAdminForm
     change_form_template = "admin/main/checkout/change_form.html"
-    list_display = ['__str__', 'target_datetime', 'checkout_status']
+    list_display = ['__str__', 'target_datetime', 'checkout_status', 'payment_success', 'payment_type']
     # TODO: readonly fields
     readonly_fields = ['bonuses_received', 'takes_time', 'payment_success', 'payment_id', 'payment_link'
                        # 'canceled', 'postponed', 'started', 'status'
@@ -46,6 +46,7 @@ class CheckoutAdmin(admin.ModelAdmin):
             return "Выполняется"
         else:
             return "Ожидает выполнения"
+
 
     checkout_status.short_description = "Статус"
 
